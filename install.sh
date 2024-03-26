@@ -31,6 +31,7 @@ apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docke
 ## By default, the Docker daemon requires root privileges to run. To use Docker without sudo, add your user to the Docker group
 usermod -aG docker $USER
 
+
 ## Change permissions of the Docker socket
 chmod 666 /var/run/docker.sock
 
@@ -38,11 +39,10 @@ chmod 666 /var/run/docker.sock
 mkdir -p /etc/systemd/system/docker.service.d
 
 ## Create override.conf file to expose docker to Windows
-echo -e "[Service]\nExecStart=\nExecStart=/usr/bin/dockerd -H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock" | tee /etc/systemd/system/docker.service.d/override.conf > /dev/null
-
+echo -e "[Service]\nExecStart=\nExecStart=/usr/bin/dockerd -H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock" > /etc/systemd/system/docker.service.d/override.conf
 
 ## Create daemon.json file to set default address pool
-echo -e "{\n \"default-address-pools\": [{\"base\":\"10.199.0.0/16\", \"size\":24}]}" | tee /etc/docker/daemon.json > /dev/null
+echo -e "{\n \"default-address-pools\": [{\"base\":\"10.199.0.0/16\", \"size\":24}]}" > /etc/docker/daemon.json
 
 ## Reload the Docker daemon
 systemctl daemon-reload
@@ -53,7 +53,7 @@ systemctl restart docker
 DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
 mkdir -p $DOCKER_CONFIG/cli-plugins
 curl -SL https://github.com/docker/compose/releases/download/v2.20.3/docker-compose-linux-x86_64 -o $DOCKER_CONFIG/cli-plugins/docker-compose
-Apply executable permissions to the binary
+# Apply executable permissions to the binary
 chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
 
 # Install DDB
