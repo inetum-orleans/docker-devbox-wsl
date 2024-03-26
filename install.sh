@@ -1,9 +1,16 @@
+#!/usr/bin/env bash
 # INSTALL DDB ON WSL WITH AN OFFICIAL UBUNTU VERSION
 
 # Check if the script is run as root if not rerun as root
 if [ "$(id -u)" != "0" ]; then
    sudo $0
     exit $?
+fi
+DDB_USER=${DDB_USER:-$SUDO_USER}
+
+if [ -z "$DDB_USER" ]; then
+    echo "DDB_USER is not defined"
+    exit 1
 fi
 
 #Update and upgrade packages
@@ -29,7 +36,7 @@ apt-get update -y
 apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
 
 ## By default, the Docker daemon requires root privileges to run. To use Docker without sudo, add your user to the Docker group
-usermod -aG docker $USER
+usermod -aG docker $DDB_USER
 
 ## Change permissions of the Docker socket
 chmod 666 /var/run/docker.sock
@@ -49,14 +56,14 @@ systemctl daemon-reload
 systemctl restart docker
 
 # Install and configuration of Docker Compose
-DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
+DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/$DDB_USER/.docker}
 mkdir -p $DOCKER_CONFIG/cli-plugins
 curl -SL https://github.com/docker/compose/releases/download/v2.20.3/docker-compose-linux-x86_64 -o $DOCKER_CONFIG/cli-plugins/docker-compose
 # Apply executable permissions to the binary
 chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
 
 # Install DDB
-curl -L https://github.com/inetum-orleans/docker-devbox/raw/master/installer | bash
+su -c 'curl -L https://github.com/inetum-orleans/docker-devbox/raw/master/installer | bash' - $DDB_USER
 
 # Add the HOST_IP variable to the .bashrc file
-echo 'export HOST_IP=$(ip route show default | awk '\''{print $3}'\'')' >> $HOME/.bashrc
+echo 'export HOST_IP=$(ip route show default | awk '\''{print $3}'\'')' >> $HOME/$DDB_USER/.bashrc
