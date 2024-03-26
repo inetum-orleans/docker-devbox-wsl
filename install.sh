@@ -60,4 +60,4 @@ chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
 curl -L https://github.com/inetum-orleans/docker-devbox/raw/master/installer | bash
 
 # Add the HOST_IP variable to the .bashrc file
-echo 'export HOST_IP=$(ip route show default | awk '\''{print $3}'\'')' >> ~/.bashrc
+echo 'export HOST_IP=$(ip route show default | awk '\''{print $3}'\'')' >> $HOME/.bashrc
