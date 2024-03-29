@@ -67,3 +67,31 @@ su -c 'curl -L https://github.com/inetum-orleans/docker-devbox/raw/master/instal
 
 # Add the HOST_IP variable to the .bashrc file
 echo 'export HOST_IP=$(ip route show default | awk '\''{print $3}'\'')' >> $HOME/$DDB_USER/.bashrc
+
+# Configure the global ddb.yml file
+cat <<EOF > "${HOME}/.docker-devbox/ddb.yaml"
+# =======================================================================
+# Generated file by inetum-orleans/docker-devbox-wsl on $(date +"%Y/%m/%d")
+# Do not modify. To override, create a ddb.local.yaml file.
+# =======================================================================
+docker:
+  ip: ${LOCAL_IP}
+  debug:
+    host: '\$HOST_IP'
+EOF
+
+# Configure the global ddb.local.yml file
+cat <<EOF > "${HOME}/.docker-devbox/ddb.local.yaml"
+certs:
+  cfssl:
+    server:
+      host: inetum-cfssl.azurewebsites.net
+      port: 443
+      ssl: true
+      verify_cert: true
+shell:
+  aliases:
+    dc: docker compose
+  global_aliases:
+    - dc
+EOF
