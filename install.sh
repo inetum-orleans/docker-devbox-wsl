@@ -3,13 +3,13 @@
 
 # Check if the script is run as root if not rerun as root
 if [ "$(id -u)" != "0" ]; then
-   sudo $0
+    sudo $0
     exit $?
 fi
 DDB_USER=${DDB_USER:-$SUDO_USER}
 
 if [ -z "$DDB_USER" ]; then
-    echo "DDB_USER is not defined"
+    echo "DDB_USER is not defined or could not be detected from SUDO_USER. Set the DDB_USER variable, or run this script as your target user (must be in sudoer)."
     exit 1
 fi
 
@@ -19,7 +19,6 @@ apt-get upgrade -y
 
 #Install and configuration of Docker
 ## Add Docker's official GPG key:
-apt-get update -y
 apt-get install ca-certificates curl make -y
 install -m 0755 -d /etc/apt/keyrings
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
