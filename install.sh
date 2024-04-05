@@ -95,3 +95,6 @@ shell:
   global_aliases:
     - dc
 EOF
+
+# Reload the .bashrc file
+source /home/$DDB_USER/.bashrc
