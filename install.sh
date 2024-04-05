@@ -56,7 +56,7 @@ systemctl daemon-reload
 systemctl restart docker
 
 # Install and configuration of Docker Compose
-DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/$DDB_USER/.docker}
+DOCKER_CONFIG=${DOCKER_CONFIG:-/home/$DDB_USER/.docker}
 mkdir -p $DOCKER_CONFIG/cli-plugins
 curl -SL https://github.com/docker/compose/releases/download/v2.20.3/docker-compose-linux-x86_64 -o $DOCKER_CONFIG/cli-plugins/docker-compose
 # Apply executable permissions to the binary
@@ -66,10 +66,10 @@ chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
 su -c 'curl -L https://github.com/inetum-orleans/docker-devbox/raw/master/installer | bash' - $DDB_USER
 
 # Add the HOST_IP variable to the .bashrc file
-echo 'export HOST_IP=$(ip route show default | awk '\''{print $3}'\'')' >> $HOME/$DDB_USER/.bashrc
+echo 'export HOST_IP=$(ip route show default | awk '\''{print $3}'\'')' >> /home/$DDB_USER/.bashrc
 
 # Configure the global ddb.yml file
-cat <<EOF > "${HOME}/.docker-devbox/ddb.yaml"
+cat <<EOF > "/home/$DDB_USER/.docker-devbox/ddb.yaml"
 # =======================================================================
 # Generated file by inetum-orleans/docker-devbox-wsl on $(date +"%Y/%m/%d")
 # Do not modify. To override, create a ddb.local.yaml file.
@@ -81,7 +81,7 @@ docker:
 EOF
 
 # Configure the global ddb.local.yml file
-cat <<EOF > "${HOME}/.docker-devbox/ddb.local.yaml"
+cat <<EOF > "/home/$DDB_USER/.docker-devbox/ddb.local.yaml"
 certs:
   cfssl:
     server:
