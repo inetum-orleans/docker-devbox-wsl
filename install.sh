@@ -44,15 +44,51 @@ chmod 666 /var/run/docker.sock
 mkdir -p /etc/systemd/system/docker.service.d
 
 ## Create override.conf file to expose docker to Windows
-echo -e "[Service]\nExecStart=\nExecStart=/usr/bin/dockerd -H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock" >> /etc/systemd/system/docker.service.d/override.conf
+### Define the string to check and add
+EXPOSE_DOCKER="[Service]\nExecStart=\nExecStart=/usr/bin/dockerd -H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock"
+
+### Check if the string exists in the override.conf file
+if ! grep -Fxq "$EXPOSE_DOCKER" /etc/systemd/system/docker.service.d/override.conf
+then
+    ### If the string does not exist, append it to the file
+    echo -e "$EXPOSE_DOCKER" >> /etc/systemd/system/docker.service.d/override.conf
+fi
 
 ## Create daemon.json file to set default address pool
-echo -e "{\n \"default-address-pools\": [{\"base\":\"10.199.0.0/16\", \"size\":24}]\n}" >> /etc/docker/daemon.json
+### Define the string to check and add
+ADDRESS_POOL="{\n \"default-address-pools\": [{\"base\":\"10.199.0.0/16\", \"size\":24}]\n}"
+
+### Check if the string exists in the override.conf file
+if ! grep -Fxq "$ADDRESS_POOL" /etc/docker/daemon.json
+then
+    ### If the string does not exist, append it to the file
+    echo -e "$ADDRESS_POOL" >> /etc/docker/daemon.json
+fi
 
 ## Reload the Docker daemon
 systemctl daemon-reload
 ## Restart Docker
 systemctl restart docker
+
+# Check if Docker service is running
+for i in {1..30}
+do
+    if systemctl is-active --quiet docker
+    then
+        echo "Docker service is running."
+        break
+    else
+        echo "Waiting for Docker service to start... ($i/30)"
+        sleep 1
+    fi
+done
+
+# If Docker service is not running after 30 seconds, exit the script
+if ! systemctl is-active --quiet docker
+then
+    echo "Error: Docker service did not start within 30 seconds."
+    exit 1
+fi
 
 # Install DDB
 su -c 'curl -L https://github.com/inetum-orleans/docker-devbox/raw/master/installer | bash' - $DDB_USER
