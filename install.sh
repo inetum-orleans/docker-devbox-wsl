@@ -46,23 +46,27 @@ mkdir -p /etc/systemd/system/docker.service.d
 ## Create override.conf file to expose docker to Windows
 ### Define the string to check and add
 EXPOSE_DOCKER="[Service]\nExecStart=\nExecStart=/usr/bin/dockerd -H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock"
+### Define the path to the override.conf file
+OVERRIDE_PATH="/etc/systemd/system/docker.service.d/override.conf"
 
-### Check if the string exists in the override.conf file
-if ! grep -Fxq "$EXPOSE_DOCKER" /etc/systemd/system/docker.service.d/override.conf
+### Check if the file exist or the string exists in the override.conf file
+if [ ! -f "$OVERRIDE_PATH" ] || ! grep -Fxq "$EXPOSE_DOCKER" "$OVERRIDE_PATH"
 then
     ### If the string does not exist, append it to the file
-    echo -e "$EXPOSE_DOCKER" >> /etc/systemd/system/docker.service.d/override.conf
+    echo -e "$EXPOSE_DOCKER" >> "$OVERRIDE_PATH"
 fi
 
 ## Create daemon.json file to set default address pool
 ### Define the string to check and add
 ADDRESS_POOL="{\n \"default-address-pools\": [{\"base\":\"10.199.0.0/16\", \"size\":24}]\n}"
+### Define the path to the daemon.json file
+DAEMON_PATH="/etc/docker/daemon.json"
 
-### Check if the string exists in the override.conf file
-if ! grep -Fxq "$ADDRESS_POOL" /etc/docker/daemon.json
+### Check if the file exist or the string exists in the daemon.json file
+if [ ! -f "$DAEMON_PATH" ] || ! grep -Fxq "$ADDRESS_POOL" "$DAEMON_PATH"
 then
     ### If the string does not exist, append it to the file
-    echo -e "$ADDRESS_POOL" >> /etc/docker/daemon.json
+    echo -e "$ADDRESS_POOL" >> "$DAEMON_PATH"
 fi
 
 ## Reload the Docker daemon
