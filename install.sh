@@ -44,10 +44,10 @@ chmod 666 /var/run/docker.sock
 mkdir -p /etc/systemd/system/docker.service.d
 
 ## Create override.conf file to expose docker to Windows
-echo "[Service]\nExecStart=\nExecStart=/usr/bin/dockerd -H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock" > /etc/systemd/system/docker.service.d/override.conf
+echo -e "[Service]\nExecStart=\nExecStart=/usr/bin/dockerd -H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock" >> /etc/systemd/system/docker.service.d/override.conf
 
 ## Create daemon.json file to set default address pool
-echo "{\n \"default-address-pools\": [{\"base\":\"10.199.0.0/16\", \"size\":24}]}" > /etc/docker/daemon.json
+echo -e "{\n \"default-address-pools\": [{\"base\":\"10.199.0.0/16\", \"size\":24}]\n}" >> /etc/docker/daemon.json
 
 ## Reload the Docker daemon
 systemctl daemon-reload
