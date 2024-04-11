@@ -37,8 +37,8 @@ apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docke
 ## By default, the Docker daemon requires root privileges to run. To use Docker without sudo, add your user to the Docker group
 usermod -aG docker $DDB_USER
 
-## Change permissions of the Docker socket
-chmod 666 /var/run/docker.sock
+## Activate the changes to groups
+newgrp docker
 
 ## Expose docker to Windows by 2375 port create as root
 mkdir -p /etc/systemd/system/docker.service.d
