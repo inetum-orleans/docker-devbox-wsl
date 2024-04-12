@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 # INSTALL DDB ON WSL WITH AN OFFICIAL UBUNTU VERSION
 
 # Check if the script is run as root if not rerun as root
@@ -36,9 +37,6 @@ apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docke
 
 ## By default, the Docker daemon requires root privileges to run. To use Docker without sudo, add your user to the Docker group
 usermod -aG docker $DDB_USER
-
-## Activate the changes to groups
-newgrp docker
 
 ## Expose docker to Windows by 2375 port create as root
 mkdir -p /etc/systemd/system/docker.service.d
@@ -117,6 +115,4 @@ shell:
     - dc
 EOF
 
-
-# Reload the .bashrc file
-source /home/$DDB_USER/.bashrc
+echo 'Please restart your terminal to apply the changes.'
