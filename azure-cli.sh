@@ -20,8 +20,12 @@ sudo apt-get update && sudo apt-get install azure-cli
 # If the azure username is set
 if [ -n "$AZ_USERNAME" ]; then
   az login --service-principal --username $AZ_USERNAME -p "$AZ_PASSWORD" --tenant $AZ_TENANT
+
+  CRONTAB_CONTENT=$(crontab -l 2>/dev/null || true)
+
   # Test if user crontab contains `az acr login --name ddb-azure`. If not, add it.
-  if ! crontab -l 2>/dev/null | grep -q "az acr login --name ddb-azure"; then
-    (crontab -l 2>/dev/null; echo "0,15,30,45 * * * * az acr login --name ddb-azure") | crontab -
+  if ! echo "$CRONTAB_CONTENT" | grep -q "az acr login --name ddb-azure"; then
+    (echo "$CRONTAB_CONTENT"; echo "0,15,30,45 * * * * az acr login --name ddb-azure") | crontab -
+    echo "Azure CLI login command added to crontab."
   fi
 fi
