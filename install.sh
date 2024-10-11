@@ -106,7 +106,6 @@ cat <<EOF > "/home/$DDB_USER/.docker-devbox/ddb.yaml"
 # Do not modify. To override, create a ddb.local.yaml file.
 # =======================================================================
 docker:
-  ip: ${LOCAL_IP}
   debug:
     host: '\$HOST_IP'
 shell:
