@@ -92,11 +92,12 @@ then
     exit 1
 fi
 
+# Add the HOST_IP variable to the .bashrc file
+echo 'export HOST_IP=$(ip route show default | awk '\''{print $3}'\'')' >> /home/$DDB_USER/.bashrc
+
 # Install DDB
 su -c 'curl -L https://github.com/inetum-orleans/docker-devbox/raw/master/installer | bash' - $DDB_USER
 
-# Add the HOST_IP variable to the .bashrc file
-echo 'export HOST_IP=$(ip route show default | awk '\''{print $3}'\'')' >> /home/$DDB_USER/.bashrc
 
 # Configure the global ddb.yml file
 cat <<EOF > "/home/$DDB_USER/.docker-devbox/ddb.yaml"
