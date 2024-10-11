@@ -4,7 +4,7 @@ set -e
 echo "Please insert the name of azure container registry :"
 read AZ_REGISTRY
 
-echo "Please insert the username Azure :"
+echo "Azure username :"
 read AZ_USERNAME
 
 echo "Please insert the Tenant Azure :"
