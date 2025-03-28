@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 set -e
 
-echo "Please insert the name of azure container registry :"
+echo "Azure container registry (ACR) name ( the X part in X.azurecr.io ):"
 read AZ_REGISTRY
+
+echo "Azure Tenant ID :"
+read AZ_TENANT
 
 echo "Azure username :"
 read AZ_USERNAME
 
-echo "Please insert the Tenant Azure :"
-read AZ_TENANT
-
-echo "Please insert the password Azure :"
+echo "Azure password :"
 read -s AZ_PASSWORD
 
 sudo apt-get update && sudo apt-get install -y curl apt-transport-https lsb-release gnupg
